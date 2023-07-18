@@ -11,7 +11,8 @@ public class bookstore_frame extends JFrame {
 	private String dataModel[];
 	
 	private JTextField search_content;
-	private JButton search_bt, login_bt;
+	private JButton search_bt, login_bt, left_bt, right_bt;
+	private JPanel book1_panel, book2_panel, book3_panel;
 	
 	private bookstore_DAO monDB;
 	
@@ -24,56 +25,133 @@ public class bookstore_frame extends JFrame {
 	
 	public void initForm() {
 		Container cpane = getContentPane();
+		cpane.setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
+		
 		JPanel controlPanel = new JPanel();
+		controlPanel.setBackground(Color.cyan);
+		JPanel searchPanel = new JPanel();
+		searchPanel.setBackground(Color.green);
 		JPanel listPanel = new JPanel();
-		listPanel.setLayout(new BorderLayout());
+		listPanel.setBackground(Color.gray);
 		
-		JLabel label;
 		
-		GridBagLayout gbl = new GridBagLayout();
-		controlPanel.setLayout(gbl);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
+		controlPanel.setLayout(new FlowLayout(2));
 		
-		setGrid(gbc, 0, 1, 1 ,1);
-		label = new JLabel();
-		gbl.setConstraints(label, gbc);
-		controlPanel.add(label);
-		
-		setGrid(gbc, 1, 1, 1, 1);
-		label = new JLabel();
-		gbl.setConstraints(label, gbc);
-		controlPanel.add(label);
-		
-		setGrid(gbc, 1, 1, 3, 1);
-		search_content = new JTextField();
-		gbl.setConstraints(search_content, gbc);
-		controlPanel.add(search_content);
-		
-		setGrid(gbc, 5, 1, 1, 1);
-		search_bt = new JButton("SEARCH");
-		gbl.setConstraints(search_bt, gbc);
-		controlPanel.add(search_bt);
-		
-		setGrid(gbc, 5, 2, 1, 1);
 		dataModel = new String[20];
 		combo_frame = new JComboBox<String>(new DefaultComboBoxModel<String>(dataModel));
 		combo_frame.removeAllItems();
 		combo_frame.addItem("master");
 		combo_frame.addItem("user");
-		gbl.setConstraints(combo_frame, gbc);
 		controlPanel.add(combo_frame);
 		
-		setGrid(gbc, 6, 2, 1, 1);
 		login_bt = new JButton("LOGIN");
 		login_bt.addActionListener(new loginListener());
-		gbl.setConstraints(login_bt, gbc);
 		controlPanel.add(login_bt);
 		
-		cpane.add("North", controlPanel);
-		pack();
+		
+		GridBagLayout gbl = new GridBagLayout();
+		searchPanel.setLayout(gbl);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
+		
+		search_content = new JTextField("Book title...");
+		gbc.gridx = 0;
+		gbc.gridwidth = 3;
+		gbl.setConstraints(search_content, gbc);
+		searchPanel.add(search_content);
+		
+		search_bt = new JButton("SEARCH");
+		gbc.gridx = 3;
+		gbc.gridwidth = 1;
+		gbl.setConstraints(search_bt, gbc);
+		searchPanel.add(search_bt);
+		
+		
+		listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.X_AXIS));
+		left_bt = new JButton("<");
+		listPanel.add(left_bt);
+		
+		book1_panel = new JPanel();
+		book1_panel.setBackground(Color.yellow);
+		listPanel.add(book1_panel);
+		
+		book2_panel = new JPanel();
+		book2_panel.setBackground(Color.blue);
+		listPanel.add(book2_panel);
+		
+		book3_panel = new JPanel();
+		book3_panel.setBackground(Color.red);
+		listPanel.add(book3_panel);
+		
+		right_bt = new JButton(">");
+		listPanel.add(right_bt);
+
+		add(controlPanel);
+		add(searchPanel);
+		add(listPanel);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+//		
+//		listPanel.setLayout(new BorderLayout());
+//		
+//		
+//		JLabel label;
+//		
+//		GridBagLayout gbl = new GridBagLayout();
+//		controlPanel.setLayout(gbl);
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.fill = GridBagConstraints.BOTH;
+//		gbc.weightx = 1;
+//		gbc.weighty = 1;
+//		
+//		setGrid(gbc, 0, 1, 1 ,1);
+//		label = new JLabel();
+//		gbl.setConstraints(label, gbc);
+//		controlPanel.add(label);
+//		
+//		setGrid(gbc, 1, 1, 1, 1);
+//		label = new JLabel();
+//		gbl.setConstraints(label, gbc);
+//		controlPanel.add(label);
+		
+//		setGrid(gbc, 1, 1, 3, 1);
+//		search_content = new JTextField();
+//		gbl.setConstraints(search_content, gbc);
+//		controlPanel.add(search_content);
+		
+//		setGrid(gbc, 5, 1, 1, 1);
+//		search_bt = new JButton("SEARCH");
+//		gbl.setConstraints(search_bt, gbc);
+//		controlPanel.add(search_bt);
+		
+//		setGrid(gbc, 5, 2, 1, 1);
+//		dataModel = new String[20];
+//		combo_frame = new JComboBox<String>(new DefaultComboBoxModel<String>(dataModel));
+//		combo_frame.removeAllItems();
+//		combo_frame.addItem("master");
+//		combo_frame.addItem("user");
+//		gbl.setConstraints(combo_frame, gbc);
+//		controlPanel.add(combo_frame);
+		
+//		setGrid(gbc, 6, 2, 1, 1);
+//		login_bt = new JButton("LOGIN");
+//		login_bt.addActionListener(new loginListener());
+//		gbl.setConstraints(login_bt, gbc);
+//		controlPanel.add(login_bt);
+		
+//		cpane.add("North", controlPanel);
+//		pack();
 		
 	}
 	public void setGrid(GridBagConstraints gbc, int dx, int dy, int width, int height) {
