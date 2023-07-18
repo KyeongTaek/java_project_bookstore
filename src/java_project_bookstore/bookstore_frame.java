@@ -6,15 +6,20 @@ import java.sql.*;
 
 import javax.swing.*;
 
+import java.awt.image.*;
+
 public class bookstore_frame extends JFrame {
 	private JComboBox<String> combo_frame;
 	private String dataModel[];
 	
 	private JTextField search_content;
-	private JButton search_bt, login_bt, left_bt, right_bt, writeReview_bt;
+	private JButton search_bt, login_bt; 
+	private JButton left_bt, right_bt; // buttons for swiping book list
+	private JButton writeReview_bt;
+	
 	public JPanel controlPanel, searchPanel, listPanel;
-	public JPanel leftPanel, middlePanel, rightPanel;
-	public JPanel book1_panel, book2_panel, book3_panel;
+	public JPanel leftPanel, middlePanel, rightPanel; // panel that consists searchPanel
+	public JPanel book1_panel, book2_panel, book3_panel; // panel that consists listPanel
 	protected JPanel search_result_panel;
 	
 	private bookstore_DAO monDB;
@@ -26,9 +31,11 @@ public class bookstore_frame extends JFrame {
 		basic_initForm();
 	}
 	
-	public void basic_initForm() {
+	public void basic_initForm() { // basic frame
 		Container cpane = getContentPane();
 		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
+		
+		cpane.removeAll();
 		
 		controlPanel = new JPanel();
 		
@@ -68,12 +75,14 @@ public class bookstore_frame extends JFrame {
 		
 		cpane.add(controlPanel);
 		cpane.add(searchPanel);	
-		cpane.add(listPanel);
+//		cpane.add(listPanel);
 	}
 	
 	public void user_initForm() { // user frame
 		Container cpane = getContentPane();
 		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
+		
+		cpane.removeAll();
 		
 		controlPanel = new JPanel();
 		
@@ -99,6 +108,8 @@ public class bookstore_frame extends JFrame {
 		Container cpane = getContentPane();
 		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
 		
+		cpane.removeAll();
+		
 		controlPanel = new JPanel();
 		
 		middlePanel = new JPanel();
@@ -116,6 +127,8 @@ public class bookstore_frame extends JFrame {
 	public void search_result_Form() { // search result(4-1, 4-2)
 		Container cpane = getContentPane();
 		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
+		
+		cpane.removeAll();
 		
 		controlPanel = new JPanel();
 		
@@ -209,6 +222,7 @@ public class bookstore_frame extends JFrame {
 		middlePanel.add(search_content);
 
 		search_bt = new JButton("SEARCH");
+		search_bt.addActionListener(new searchListener());
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbl.setConstraints(search_bt, gbc);
 		middlePanel.add(search_bt);
@@ -221,6 +235,8 @@ public class bookstore_frame extends JFrame {
 	}
 	
 	public void search_master_Form() { // master's search part
+		searchPanel.removeAll();
+		
 		JButton userManage_bt = new JButton("manage user");
 		
 		leftPanel.add(userManage_bt);
@@ -236,7 +252,7 @@ public class bookstore_frame extends JFrame {
 		JButton wishList_bt = new JButton("show wish list");
 		
 		rightPanel.add(wishList_bt);
-		
+
 		searchPanel.add(rightPanel);
 	}
 	
@@ -306,7 +322,7 @@ public class bookstore_frame extends JFrame {
 	}
 	
 
-	class loginListener implements ActionListener {
+	class loginListener implements ActionListener { // show login frame
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("LOGIN BUTTON WAS PRESSED!!!");
 			login_frame log_frm = new login_frame();
@@ -315,13 +331,14 @@ public class bookstore_frame extends JFrame {
 		}
 	}
 	
-	class logoutListener implements ActionListener {
+	class logoutListener implements ActionListener { // show basic frame
 		public void actionPerformed(ActionEvent e) {
-			
+			System.out.println("\nLOGOUT BUTTON WAS PRESSED!!!");
+			bookstore_frame.this.basic_initForm();
 		}
 	}	
 	
-	class login_frame extends bookstore_frame{
+	class login_frame extends bookstore_frame{ // login frame
 		private JTextField strID;
 		private JPasswordField strPasswd;
 		private JPanel pan;
@@ -366,7 +383,7 @@ public class bookstore_frame extends JFrame {
 						}
 						else { // user frame
 							
-							user_initForm(); // show user's frame
+							bookstore_frame.this.user_initForm(); // show user's frame
 							
 							System.out.println("master account verified!! will show user's frame!!");
 							System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
@@ -382,6 +399,9 @@ public class bookstore_frame extends JFrame {
 					if(new String(strPasswd.getPassword()).equals("sj4321")) {
 						if(combo_frame.getSelectedItem().equals("user")) {
 							//show user's frame
+							
+							bookstore_frame.this.user_initForm(); // show user's frame
+							
 							System.out.println("user account verified!! will show user's frame!!");
 							System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 							System.out.println(new String(strPasswd.getPassword()));
@@ -406,7 +426,33 @@ public class bookstore_frame extends JFrame {
 		}
 	}
 
-	class writeListener implements ActionListener {
+	
+	class searchListener implements ActionListener { // show search result
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("\nSEARCH BUTTON WAS PRESSED!!!");
+			bookstore_frame.this.search_result_Form();
+		}
+	}
+	
+	class bookInfo_panel extends JPanel { // book info panel
+		BufferedImage off;
+		Graphics offG;
+		
+		public bookInfo_panel() {
+			initForm();
+		}
+		
+		public void initForm() {
+			offG = off.getGraphics();
+		}
+		public void paint(Graphics g) {
+			super.paint(g);
+			g.drawImage(off, 0, 0, this);
+		}
+	}
+	
+	
+	class writeListener implements ActionListener { // add review
 		public void actionPerformed(ActionEvent e) {
 			
 		}
