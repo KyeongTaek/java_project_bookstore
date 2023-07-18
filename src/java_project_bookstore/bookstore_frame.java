@@ -11,8 +11,11 @@ public class bookstore_frame extends JFrame {
 	private String dataModel[];
 	
 	private JTextField search_content;
-	private JButton search_bt, login_bt, left_bt, right_bt;
-	private JPanel book1_panel, book2_panel, book3_panel;
+	private JButton search_bt, login_bt, left_bt, right_bt, writeReview_bt;
+	public JPanel controlPanel, searchPanel, listPanel;
+	public JPanel leftPanel, middlePanel, rightPanel;
+	public JPanel book1_panel, book2_panel, book3_panel;
+	protected JPanel search_result_panel;
 	
 	private bookstore_DAO monDB;
 	
@@ -20,22 +23,123 @@ public class bookstore_frame extends JFrame {
 	bookstore_frame(bookstore_DAO db) {
 		monDB = db;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		initForm();
+		basic_initForm();
 	}
 	
-	public void initForm() {
+	public void basic_initForm() {
 		Container cpane = getContentPane();
-		cpane.setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
+		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
 		
-		JPanel controlPanel = new JPanel();
-		controlPanel.setBackground(Color.cyan);
-		JPanel searchPanel = new JPanel();
-		searchPanel.setBackground(Color.green);
-		JPanel listPanel = new JPanel();
-		listPanel.setBackground(Color.gray);
+		controlPanel = new JPanel();
+		
+		searchPanel = new JPanel();
+		middlePanel = new JPanel();
+		
+		listPanel = new JPanel();
 		
 		
-		controlPanel.setLayout(new FlowLayout(2));
+		control_initForm();
+		
+		search_initForm();
+
+		list_initForm();
+		
+
+		cpane.add(controlPanel);
+		cpane.add(searchPanel);
+		cpane.add(listPanel);
+	}
+
+	
+	public void master_initForm() { // master frame
+		Container cpane = getContentPane();
+		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
+		
+		cpane.removeAll();
+		
+		controlPanel = new JPanel();
+		
+		middlePanel = new JPanel();
+		
+		
+		control_logged_Form();
+		
+		search_master_Form();
+		
+		cpane.add(controlPanel);
+		cpane.add(searchPanel);	
+		cpane.add(listPanel);
+	}
+	
+	public void user_initForm() { // user frame
+		Container cpane = getContentPane();
+		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
+		
+		controlPanel = new JPanel();
+		
+		searchPanel = new JPanel();
+		middlePanel = new JPanel();
+		
+		listPanel = new JPanel();
+		
+		
+		control_logged_Form();
+		
+		search_initForm();
+
+		list_initForm();
+		
+
+		cpane.add(controlPanel);
+		cpane.add(searchPanel);
+		cpane.add(listPanel);
+	}
+	
+	public void myPage_initForm() { // my page frame
+		Container cpane = getContentPane();
+		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
+		
+		controlPanel = new JPanel();
+		
+		middlePanel = new JPanel();
+		
+		
+		control_logged_Form();
+		
+		search_myPage_Form();
+		
+		cpane.add(controlPanel);
+		cpane.add(searchPanel);		
+	}
+	
+	
+	public void search_result_Form() { // search result(4-1, 4-2)
+		Container cpane = getContentPane();
+		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
+		
+		controlPanel = new JPanel();
+		
+		searchPanel = new JPanel();
+		middlePanel = new JPanel();
+		
+		listPanel = new JPanel();
+		
+		
+		control_logged_Form();
+		
+		search_initForm();
+
+		list_result_Form();
+		
+
+		cpane.add(controlPanel);
+		cpane.add(searchPanel);
+		cpane.add(listPanel);
+	}
+	
+	
+	public void control_initForm() { // basic login part
+		controlPanel.setLayout(new FlowLayout(2)); // FlowLayout.RIGHT?
 		
 		dataModel = new String[20];
 		combo_frame = new JComboBox<String>(new DefaultComboBoxModel<String>(dataModel));
@@ -46,121 +150,162 @@ public class bookstore_frame extends JFrame {
 		
 		login_bt = new JButton("LOGIN");
 		login_bt.addActionListener(new loginListener());
+		controlPanel.add(login_bt);		
+	}
+	
+	public void control_logged_Form() { // when logged-in
+		controlPanel.setLayout(new FlowLayout(2));
+		
+		login_bt = new JButton("LOGOUT");
+		login_bt.addActionListener(new logoutListener());
+		controlPanel.add(login_bt);
+	}
+	
+	public void control_review_Form() { // when leaving reviews
+		controlPanel.setLayout(new FlowLayout(2));
+		
+		login_bt = new JButton("LOGOUT");
+		login_bt.addActionListener(new logoutListener());
 		controlPanel.add(login_bt);
 		
+		writeReview_bt = new JButton("WRITE");
+		writeReview_bt.addActionListener(new writeListener());
+		controlPanel.add(writeReview_bt);
+	}
+	
+	
+	public void search_initForm() { // basic search part
+		searchPanel.setLayout(new GridLayout(1, 3));
+		
+		leftPanel = new JPanel();
+		searchPanel.add(leftPanel);
 		
 		GridBagLayout gbl = new GridBagLayout();
-		searchPanel.setLayout(gbl);
+		middlePanel.setLayout(gbl);
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1.0;
+
+		JLabel noname1, noname2, noname3, noname4; // to create 4 columns
+		
+		noname1 = new JLabel();
+		gbl.setConstraints(noname1, gbc);
+		middlePanel.add(noname1);
+		noname2 = new JLabel();
+		gbl.setConstraints(noname2, gbc);
+		middlePanel.add(noname2);
+		noname3 = new JLabel();
+		gbl.setConstraints(noname3, gbc);
+		middlePanel.add(noname3);
+		
+		gbc.gridwidth = GridBagConstraints.REMAINDER; // to end current row and create new one
+		noname4 = new JLabel();
+		gbl.setConstraints(noname4, gbc);
+		middlePanel.add(noname4);
 		
 		search_content = new JTextField("Book title...");
-		gbc.gridx = 0;
-		gbc.gridwidth = 3;
+		gbc.gridwidth = GridBagConstraints.RELATIVE;
 		gbl.setConstraints(search_content, gbc);
-		searchPanel.add(search_content);
-		
+		middlePanel.add(search_content);
+
 		search_bt = new JButton("SEARCH");
-		gbc.gridx = 3;
-		gbc.gridwidth = 1;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbl.setConstraints(search_bt, gbc);
-		searchPanel.add(search_bt);
+		middlePanel.add(search_bt);
 		
+//		searchBar.setBackground(Color.yellow);
+		searchPanel.add(middlePanel);
 		
+		rightPanel = new JPanel();
+		searchPanel.add(rightPanel);
+	}
+	
+	public void search_master_Form() { // master's search part
+		JButton userManage_bt = new JButton("manage user");
+		
+		leftPanel.add(userManage_bt);
+		
+		searchPanel.add(leftPanel);
+		
+		JButton showResult_bt = new JButton("show result");
+		
+		middlePanel.add(showResult_bt);
+		
+		searchPanel.add(middlePanel);
+		
+		JButton wishList_bt = new JButton("show wish list");
+		
+		rightPanel.add(wishList_bt);
+		
+		searchPanel.add(rightPanel);
+	}
+	
+	public void search_myPage_Form() { // my page's search part
+		JButton myInfo_bt = new JButton("my info");
+		
+		leftPanel.add(myInfo_bt);
+		
+		searchPanel.add(leftPanel);
+		
+		JButton deliveryList_bt = new JButton("delivery list");
+		
+		middlePanel.add(deliveryList_bt);
+		
+		searchPanel.add(middlePanel);
+		
+		JButton readingStatus_bt = new JButton("reading status");
+		
+		rightPanel.add(readingStatus_bt);
+		
+		searchPanel.add(rightPanel);
+	}
+	
+	
+	public void list_initForm() { // basic booklist part
 		listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.X_AXIS));
 		left_bt = new JButton("<");
 		listPanel.add(left_bt);
 		
 		book1_panel = new JPanel();
-		book1_panel.setBackground(Color.yellow);
+		book1_panel.setBorder(BorderFactory.createLineBorder(Color.black));
+//		book1_panel.setBackground(Color.yellow);
 		listPanel.add(book1_panel);
 		
 		book2_panel = new JPanel();
-		book2_panel.setBackground(Color.blue);
+//		book2_panel.setBackground(Color.blue);
+		book2_panel.setBorder(BorderFactory.createLineBorder(Color.black));
 		listPanel.add(book2_panel);
 		
 		book3_panel = new JPanel();
-		book3_panel.setBackground(Color.red);
+//		book3_panel.setBackground(Color.red);
+		book3_panel.setBorder(BorderFactory.createLineBorder(Color.black));
 		listPanel.add(book3_panel);
 		
 		right_bt = new JButton(">");
 		listPanel.add(right_bt);
-
-		add(controlPanel);
-		add(searchPanel);
-		add(listPanel);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-//		
-//		listPanel.setLayout(new BorderLayout());
-//		
-//		
-//		JLabel label;
-//		
-//		GridBagLayout gbl = new GridBagLayout();
-//		controlPanel.setLayout(gbl);
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.fill = GridBagConstraints.BOTH;
-//		gbc.weightx = 1;
-//		gbc.weighty = 1;
-//		
-//		setGrid(gbc, 0, 1, 1 ,1);
-//		label = new JLabel();
-//		gbl.setConstraints(label, gbc);
-//		controlPanel.add(label);
-//		
-//		setGrid(gbc, 1, 1, 1, 1);
-//		label = new JLabel();
-//		gbl.setConstraints(label, gbc);
-//		controlPanel.add(label);
-		
-//		setGrid(gbc, 1, 1, 3, 1);
-//		search_content = new JTextField();
-//		gbl.setConstraints(search_content, gbc);
-//		controlPanel.add(search_content);
-		
-//		setGrid(gbc, 5, 1, 1, 1);
-//		search_bt = new JButton("SEARCH");
-//		gbl.setConstraints(search_bt, gbc);
-//		controlPanel.add(search_bt);
-		
-//		setGrid(gbc, 5, 2, 1, 1);
-//		dataModel = new String[20];
-//		combo_frame = new JComboBox<String>(new DefaultComboBoxModel<String>(dataModel));
-//		combo_frame.removeAllItems();
-//		combo_frame.addItem("master");
-//		combo_frame.addItem("user");
-//		gbl.setConstraints(combo_frame, gbc);
-//		controlPanel.add(combo_frame);
-		
-//		setGrid(gbc, 6, 2, 1, 1);
-//		login_bt = new JButton("LOGIN");
-//		login_bt.addActionListener(new loginListener());
-//		gbl.setConstraints(login_bt, gbc);
-//		controlPanel.add(login_bt);
-		
-//		cpane.add("North", controlPanel);
-//		pack();
-		
-	}
-	public void setGrid(GridBagConstraints gbc, int dx, int dy, int width, int height) {
-		gbc.gridx = dx;
-		gbc.gridy = dy;
-		gbc.gridwidth = width;
-		gbc.gridheight = height;
 	}
 	
+	public void list_result_Form() { // search result list part
+		listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+		
+		search_result_panel = new JPanel();
+		search_result_panel.setBorder(BorderFactory.createLineBorder(Color.black));
+		listPanel.add(search_result_panel);
+		
+		search_result_panel = new JPanel();
+		search_result_panel.setBorder(BorderFactory.createLineBorder(Color.black));
+		listPanel.add(search_result_panel);
+		
+		search_result_panel = new JPanel();
+		search_result_panel.setBorder(BorderFactory.createLineBorder(Color.black));
+		listPanel.add(search_result_panel);
+		
+		search_result_panel = new JPanel();
+		search_result_panel.setBorder(BorderFactory.createLineBorder(Color.black));
+		listPanel.add(search_result_panel);
+	}
+	
+
 	class loginListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("LOGIN BUTTON WAS PRESSED!!!");
@@ -169,6 +314,12 @@ public class bookstore_frame extends JFrame {
 			log_frm.setVisible(true);
 		}
 	}
+	
+	class logoutListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+	}	
 	
 	class login_frame extends bookstore_frame{
 		private JTextField strID;
@@ -207,18 +358,22 @@ public class bookstore_frame extends JFrame {
 				if(strID.getText().equals("root")) { // master account
 					if(new String(new String(strPasswd.getPassword())).equals("sj4321")) {
 						if(combo_frame.getSelectedItem().equals("master")) {
-							//show master's frame
+
+							bookstore_frame.this.master_initForm(); //show master's frame
+							
 							System.out.println("master account verified!! will show master's frame!!");
 							System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 						}
 						else { // user frame
-							// show user's frame
+							
+							user_initForm(); // show user's frame
+							
 							System.out.println("master account verified!! will show user's frame!!");
 							System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 						}
 					}
-					else {
-						//wrong password
+					else { //wrong password
+						
 						System.out.println("wrong password!");
 						System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 					}
@@ -251,4 +406,9 @@ public class bookstore_frame extends JFrame {
 		}
 	}
 
+	class writeListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+	}
 }
