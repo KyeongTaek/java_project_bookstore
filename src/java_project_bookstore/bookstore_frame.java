@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.image.*;
 
 public class bookstore_frame extends JFrame {
+	private bookstore_frame mainframe;
+	
 	private JComboBox<String> combo_frame;
 	private String dataModel[];
 	
@@ -26,6 +28,8 @@ public class bookstore_frame extends JFrame {
 	
 	bookstore_frame() {	}
 	bookstore_frame(bookstore_DAO db) {
+		mainframe = this;
+		
 		monDB = db;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		basic_initForm();
@@ -335,14 +339,18 @@ public class bookstore_frame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("\nLOGOUT BUTTON WAS PRESSED!!!");
 			bookstore_frame.this.basic_initForm();
+			bookstore_frame.this.validate();
 		}
 	}	
 	
-	class login_frame extends bookstore_frame{ // login frame
+	class login_frame extends bookstore_frame implements ActionListener { // login frame
+		private bookstore_frame mainFrame;
+		
 		private JTextField strID;
 		private JPasswordField strPasswd;
 		private JPanel pan;
-		public login_frame() {
+		
+		public login_frame() { 
 			initForm();
 		}
 		
@@ -364,65 +372,66 @@ public class bookstore_frame extends JFrame {
 			
 			
 			JButton bt = new JButton(" Login ");
-			bt.addActionListener(new logginginListener());
+			bt.addActionListener(this);
 			
 			cpane.add(pan);
 			cpane.add(bt);
 		}
 		
-		class logginginListener implements ActionListener {
-			public void actionPerformed(ActionEvent e) {
-				if(strID.getText().equals("root")) { // master account
-					if(new String(new String(strPasswd.getPassword())).equals("sj4321")) {
-						if(combo_frame.getSelectedItem().equals("master")) {
-
-							bookstore_frame.this.master_initForm(); //show master's frame
-							
-							System.out.println("master account verified!! will show master's frame!!");
-							System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
-						}
-						else { // user frame
-							
-							bookstore_frame.this.user_initForm(); // show user's frame
-							
-							System.out.println("master account verified!! will show user's frame!!");
-							System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
-						}
-					}
-					else { //wrong password
+		public void actionPerformed(ActionEvent e) {
+			if(strID.getText().equals("root")) { // master account
+				if(new String(new String(strPasswd.getPassword())).equals("sj4321")) {
+					if(combo_frame.getSelectedItem().equals("master")) {
+						//bookstore_frame.this.repaint();
+						bookstore_frame.this.master_initForm(); //show master's frame
+						bookstore_frame.this.validate();
 						
-						System.out.println("wrong password!");
+						System.out.println("master account verified!! will show master's frame!!");
+						System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
+					}
+					else { // user frame
+							
+						bookstore_frame.this.user_initForm(); // show user's frame
+						bookstore_frame.this.validate();
+							
+						System.out.println("master account verified!! will show user's frame!!");
 						System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 					}
 				}
-				else if(strID.getText().equals("sj001")) { // user
-					if(new String(strPasswd.getPassword()).equals("sj4321")) {
-						if(combo_frame.getSelectedItem().equals("user")) {
-							//show user's frame
+				else { //wrong password
+						
+					System.out.println("wrong password!");
+					System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
+				}
+			}
+			else if(strID.getText().equals("sj001")) { // user
+				if(new String(strPasswd.getPassword()).equals("sj4321")) {
+					if(combo_frame.getSelectedItem().equals("user")) {
+						//show user's frame
 							
-							bookstore_frame.this.user_initForm(); // show user's frame
+						bookstore_frame.this.user_initForm(); // show user's frame
+						bookstore_frame.this.validate();
 							
-							System.out.println("user account verified!! will show user's frame!!");
-							System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
-							System.out.println(new String(strPasswd.getPassword()));
-						}
-						else { // no permission
-							System.out.println("no permission!");
-							System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
-						}
-					}
-					else {
-						System.out.println("wrong password!");
+						System.out.println("user account verified!! will show user's frame!!");
 						System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 						System.out.println(new String(strPasswd.getPassword()));
 					}
+					else { // no permission
+						System.out.println("no permission!");
+						System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
+					}
 				}
-				else { // no account(wrong id)
-					System.out.println("wrong ID!");
+				else {
+					System.out.println("wrong password!");
+					System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
+					System.out.println(new String(strPasswd.getPassword()));
 				}
-				
-				setVisible(false);
 			}
+			else { // no account(wrong id)
+				System.out.println("wrong ID!");
+			}
+				
+			setVisible(false);
 		}
 	}
 
@@ -431,6 +440,7 @@ public class bookstore_frame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("\nSEARCH BUTTON WAS PRESSED!!!");
 			bookstore_frame.this.search_result_Form();
+			repaint();
 		}
 	}
 	
@@ -457,4 +467,14 @@ public class bookstore_frame extends JFrame {
 			
 		}
 	}
+
+	public void paint(Graphics g) {
+		super.paint(g);
+	}
+
+
+
+
+
+
 }
