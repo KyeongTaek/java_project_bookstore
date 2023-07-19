@@ -11,11 +11,11 @@ import java.awt.image.*;
 public class bookstore_frame extends JFrame {
 	private bookstore_frame mainframe;
 	
-	private JComboBox<String> combo_frame;
-	private String dataModel[];
+//	private JComboBox<String> combo_frame;
+//	private String dataModel[];
 	
 	private JTextField search_content;
-	private JButton search_bt, login_bt; 
+	private JButton search_bt, login_bt, mypage_bt;
 	private JButton left_bt, right_bt; // buttons for swiping book list
 	private JButton writeReview_bt;
 	
@@ -73,7 +73,7 @@ public class bookstore_frame extends JFrame {
 		middlePanel = new JPanel();
 		
 		
-		control_logged_Form();
+		control_logged_master_Form();
 		
 		search_master_Form();
 		
@@ -96,7 +96,7 @@ public class bookstore_frame extends JFrame {
 		listPanel = new JPanel();
 		
 		
-		control_logged_Form();
+		control_logged_user_Form();
 		
 		search_initForm();
 
@@ -119,7 +119,7 @@ public class bookstore_frame extends JFrame {
 		middlePanel = new JPanel();
 		
 		
-		control_logged_Form();
+		control_logged_user_Form();
 		
 		search_myPage_Form();
 		
@@ -127,8 +127,7 @@ public class bookstore_frame extends JFrame {
 		cpane.add(searchPanel);		
 	}
 	
-	
-	public void search_result_Form() { // search result(4-1, 4-2)
+	public void search_result_Form() { // search result(4-1, 4-2) frame
 		Container cpane = getContentPane();
 		setLayout(new BoxLayout(cpane, BoxLayout.Y_AXIS));
 		
@@ -142,36 +141,55 @@ public class bookstore_frame extends JFrame {
 		listPanel = new JPanel();
 		
 		
-		control_logged_Form();
+		control_logged_user_Form();
 		
 		search_initForm();
-
+		
+		if(result_cnt > 0) {
+			list_result_Form();
+		}
+		else {
+			
+		}
 		list_result_Form();
 		
 
 		cpane.add(controlPanel);
 		cpane.add(searchPanel);
 		cpane.add(listPanel);
+		validate();
 	}
 	
 	
 	public void control_initForm() { // basic login part
 		controlPanel.setLayout(new FlowLayout(2)); // FlowLayout.RIGHT?
 		
-		dataModel = new String[20];
-		combo_frame = new JComboBox<String>(new DefaultComboBoxModel<String>(dataModel));
-		combo_frame.removeAllItems();
-		combo_frame.addItem("master");
-		combo_frame.addItem("user");
-		controlPanel.add(combo_frame);
+//		dataModel = new String[20];
+//		combo_frame = new JComboBox<String>(new DefaultComboBoxModel<String>(dataModel));
+//		combo_frame.removeAllItems();
+//		combo_frame.addItem("master");
+//		combo_frame.addItem("user");
+//		controlPanel.add(combo_frame);
 		
 		login_bt = new JButton("LOGIN");
 		login_bt.addActionListener(new loginListener());
 		controlPanel.add(login_bt);		
 	}
 	
-	public void control_logged_Form() { // when logged-in
+	public void control_logged_master_Form() { // when logged-in
 		controlPanel.setLayout(new FlowLayout(2));
+		
+		login_bt = new JButton("LOGOUT");
+		login_bt.addActionListener(new logoutListener());
+		controlPanel.add(login_bt);
+	}
+	
+	public void control_logged_user_Form() { // when logged-in(for user)
+		controlPanel.setLayout(new FlowLayout(2));
+		
+		mypage_bt = new JButton("MyPage");
+		mypage_bt.addActionListener(new myPageListener());
+		controlPanel.add(mypage_bt);
 		
 		login_bt = new JButton("LOGOUT");
 		login_bt.addActionListener(new logoutListener());
@@ -261,6 +279,8 @@ public class bookstore_frame extends JFrame {
 	}
 	
 	public void search_myPage_Form() { // my page's search part
+		searchPanel.removeAll();
+		
 		JButton myInfo_bt = new JButton("my info");
 		
 		leftPanel.add(myInfo_bt);
@@ -350,6 +370,9 @@ public class bookstore_frame extends JFrame {
 		private JPasswordField strPasswd;
 		private JPanel pan;
 		
+		private JComboBox<String> combo_frame;
+		private String dataModel[];
+		
 		public login_frame() { 
 			initForm();
 		}
@@ -370,12 +393,19 @@ public class bookstore_frame extends JFrame {
 			pan.add(strPasswd);
 			
 			
-			
 			JButton bt = new JButton(" Login ");
 			bt.addActionListener(this);
 			
+			dataModel = new String[20];
+			combo_frame = new JComboBox<String>(new DefaultComboBoxModel<String>(dataModel));
+			combo_frame.removeAllItems();
+			combo_frame.addItem("master");
+			combo_frame.addItem("user");
+
+			
 			cpane.add(pan);
 			cpane.add(bt);
+			cpane.add(combo_frame);
 		}
 		
 		public void actionPerformed(ActionEvent e) {
@@ -398,9 +428,9 @@ public class bookstore_frame extends JFrame {
 						System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 					}
 				}
-				else { //wrong password
+				else { //wrong password or the account already exists
 						
-					System.out.println("wrong password!");
+					System.out.println("wrong password or the account already exists!!!");
 					System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 				}
 			}
@@ -416,25 +446,25 @@ public class bookstore_frame extends JFrame {
 						System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 						System.out.println(new String(strPasswd.getPassword()));
 					}
-					else { // no permission
-						System.out.println("no permission!");
+					else { // no permission or master account already exists
+						System.out.println("no permission or master account already exists!!!");
 						System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 					}
 				}
-				else {
-					System.out.println("wrong password!");
+				else { // wrong password or the account already exists
+					System.out.println("wrong password or the account already exists!!!");
 					System.out.println(strID.getText() + " " + strPasswd.getPassword() + " " + combo_frame.getSelectedItem());
 					System.out.println(new String(strPasswd.getPassword()));
 				}
 			}
-			else { // no account(wrong id)
+			else { // no account(wrong id) --> create account
 				System.out.println("wrong ID!");
 			}
 				
 			setVisible(false);
 		}
 	}
-
+	
 	
 	class searchListener implements ActionListener { // show search result
 		public void actionPerformed(ActionEvent e) {
@@ -458,6 +488,16 @@ public class bookstore_frame extends JFrame {
 		public void paint(Graphics g) {
 			super.paint(g);
 			g.drawImage(off, 0, 0, this);
+		}
+	}
+	
+
+	
+	class myPageListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("MYPAGE BUTTON WAS PRESSED!!!");
+			bookstore_frame.this.myPage_initForm();
+			bookstore_frame.this.validate();
 		}
 	}
 	
